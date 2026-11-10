@@ -109,4 +109,46 @@ describe("Order repository test", () => {
     await expect(orderRepository.find("456")).rejects.toThrow("Order not found");
   });
 
+  it("should find all orders", async () => {
+    const customerRepository = new CustomerRepository();
+    const customer = new Customer("123", "Customer 1");
+    customer.changeAddress(new Address("Street 1", 1, "Zipcode 1", "City 1"));
+    await customerRepository.create(customer);
+
+    const productRepository = new ProductRepository();
+    const product = [
+      new Product("123", "Produtct 1", 10),
+      new Product("432", "Produtct 2", 20)
+    ];
+
+    for (var index in product){
+      await productRepository.create(product[index]);
+    }
+
+    const orderItem = [
+      new OrderItem("1", product[0].name, product[0].price, product[0].id, 3),
+      new OrderItem("2", product[1].name, product[1].price, product[1].id, 1),
+    ];
+
+    /* Order 1 */
+    const order = new Order("111", "123", orderItem);
+
+    const orderRepository = new OrderRepository();
+    await orderRepository.create(order);
+
+    /* Order 2 */
+    const orderItems = new OrderItem("3", product[0].name, product[0].price, product[0].id, 2);
+
+    const order2 = new Order("222", "123", [orderItems]);
+
+    await orderRepository.create(order2);
+
+    const orders = await orderRepository.findAll();
+
+    expect(orders).toHaveLength(2);
+    expect(orders).toContainEqual(order);
+    expect(orders).toContainEqual(order2);
+
+  });
+
 });
