@@ -8,8 +8,10 @@ Desafio do curso Full Cycle para implementar Repository e teste utilizando os co
 
 ```bash
  npm install
+ ```
 
 2 - Rodar testes
 
 ```bash
 npm test
+```
